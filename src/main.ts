@@ -5,10 +5,15 @@ import { OrderModel } from './components/models/OrderModel';
 import { LarekApi } from './components/api/LarekApi';
 import { Api } from './components/base/Api';
 import { API_URL } from './utils/constants';
-import { TPayment } from './types'
+import { IOrder, TPayment } from './types'
 import { apiProducts } from './utils/data';
 
 const productsModel = new ProductsModel();
+const basketModel = new BasketModel();
+const orderModel = new OrderModel();
+const api = new Api(API_URL);
+const larekApi = new LarekApi(api);
+
 productsModel.setItems(apiProducts.items);
 console.log('Каталог товаров:', productsModel.getItems());
 
@@ -22,19 +27,13 @@ if (firstProduct) {
   productsModel.setSelected(firstProduct);
   console.log('Выбранный товар:', productsModel.getSelected());
 
-  const basketModel = new BasketModel();
   basketModel.add(firstProduct);
   console.log('Товары в корзине:', basketModel.getItems());
   console.log('Сумма:', basketModel.getTotal());
   console.log('Количество товаров в корзине:', basketModel.getCount());
   console.log('Корзина содержит первый товар:', basketModel.has(firstId));
-  basketModel.remove(firstId);
-  console.log('Товары в корзине после удаления:', basketModel.getItems());
-  basketModel.clear();
-  console.log('Товары в корзине после очистки:', basketModel.getItems());
 }
 
-const orderModel = new OrderModel();
 orderModel.setPayment('online');
 orderModel.setEmail('user@example.com');
 orderModel.setPhone('+1234567890');
@@ -48,20 +47,21 @@ if (Object.keys(validationErrors).length > 0) {
     console.log('Ошибки валидации заказа:', validationErrors);
 } else {
     console.log('Заказ валиден.');
-    const order = {
+    const order: IOrder = {
         ...buyerData,
         payment: buyerData.payment as TPayment,
-        total: 100,
-        items: ['item1', 'item2'],
+        total: basketModel.getTotal(),
+        items: basketModel.getItems().map((item) => item.id),
     };
     console.log('Данные заказа для сервера:', order);
 }
 
+basketModel.clear();
+console.log('Товары в корзине после очистки:', basketModel.getItems());
+
 orderModel.clear();
 console.log('Данные покупателя после очистки:', orderModel.getData());
 
-const api = new Api(API_URL);
-const larekApi = new LarekApi(api);
 larekApi.getProductList()
   .then((response) => {
     console.log('Список товаров с сервера:', response);
