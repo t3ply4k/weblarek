@@ -20,7 +20,7 @@ export class ProductsModel {
     return this.selected;
   }
 
-  getById(id: string): IProduct | null {
+  getItemById(id: string): IProduct | null {
     const item = this.items.find((item) => item.id === id);
     return item || null;
   }

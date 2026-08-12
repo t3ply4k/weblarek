@@ -3,6 +3,7 @@ import { ProductsModel } from './components/models/ProductsModel';
 import { BasketModel } from './components/models/BasketModel';
 import { OrderModel } from './components/models/OrderModel';
 import { LarekApi } from './components/api/LarekApi';
+import { Api } from './components/base/Api';
 import { API_URL } from './utils/constants';
 import { apiProducts } from './utils/data';
 
@@ -11,10 +12,10 @@ productsModel.setItems(apiProducts.items);
 console.log('Каталог товаров:', productsModel.getItems());
 
 const firstId = productsModel.getItems()[0].id;
-const firstProduct = productsModel.getById(firstId);
+const firstProduct = productsModel.getItemById(firstId);
 console.log('Первый товар:', firstProduct);
 
-console.log('Несуществующий товар:', productsModel.getById('123123'));
+console.log('Несуществующий товар:', productsModel.getItemById('123123'));
 
 if (firstProduct) {
   productsModel.setSelected(firstProduct);
@@ -51,7 +52,8 @@ if (Object.keys(validationErrors).length > 0) {
 orderModel.clear();
 console.log('Данные заказа после очистки:', orderModel.getOrderData(0, []));
 
-const larekApi = new LarekApi(API_URL);
+const api = new Api(API_URL);
+const larekApi = new LarekApi(api);
 larekApi.getProductList()
   .then((response) => {
     console.log('Список товаров с сервера:', response);
