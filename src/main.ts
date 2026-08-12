@@ -5,6 +5,7 @@ import { OrderModel } from './components/models/OrderModel';
 import { LarekApi } from './components/api/LarekApi';
 import { Api } from './components/base/Api';
 import { API_URL } from './utils/constants';
+import { TPayment } from './types'
 import { apiProducts } from './utils/data';
 
 const productsModel = new ProductsModel();
@@ -39,18 +40,25 @@ orderModel.setEmail('user@example.com');
 orderModel.setPhone('+1234567890');
 orderModel.setAddress('123 Main St, City, Country');
 
-const orderData = orderModel.getOrderData(100, ['item1', 'item2']);
-console.log('Данные заказа:', orderData);
+const buyerData = orderModel.getData();
+console.log('Данные покупателя:', buyerData);
 
-const validationErrors = orderModel.isValid();
+const validationErrors = orderModel.validate();
 if (Object.keys(validationErrors).length > 0) {
-  console.log('Ошибки валидации заказа:', validationErrors);
+    console.log('Ошибки валидации заказа:', validationErrors);
 } else {
-  console.log('Заказ валиден.');
+    console.log('Заказ валиден.');
+    const order = {
+        ...buyerData,
+        payment: buyerData.payment as TPayment,
+        total: 100,
+        items: ['item1', 'item2'],
+    };
+    console.log('Данные заказа для сервера:', order);
 }
 
 orderModel.clear();
-console.log('Данные заказа после очистки:', orderModel.getOrderData(0, []));
+console.log('Данные покупателя после очистки:', orderModel.getData());
 
 const api = new Api(API_URL);
 const larekApi = new LarekApi(api);

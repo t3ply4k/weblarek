@@ -1,8 +1,8 @@
 import { IProduct } from '../../types';
 
 export class ProductsModel {
-  items: IProduct[] = [];
-  selected: IProduct | null = null;
+  private items: IProduct[] = [];
+  private selected: IProduct | null = null;
 
   setItems(items: IProduct[]): void {
     this.items = items;

@@ -16,11 +16,15 @@ export interface IProduct {
 
 export type TPayment = 'online' | 'cash';
 
-export interface IOrder {
-    payment: TPayment;
+export interface IBuyer {
+    payment: TPayment | null;
     email: string;
     phone: string;
     address: string;
+}
+
+export interface IOrder extends Omit<IBuyer, 'payment'> {
+    payment: TPayment;
     total: number;
     items: string[];
 }
@@ -34,3 +38,5 @@ export interface IOrderResult {
     id: string;
     total: number;
 }
+
+export type TFormErrors = Partial<Record<keyof IBuyer, string>>;

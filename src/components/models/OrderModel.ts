@@ -1,11 +1,10 @@
-import { TPayment } from '../../types';
-import { IOrder } from '../../types';
+import { IBuyer, TPayment, TFormErrors } from '../../types';
 
 export class OrderModel {
-  payment: TPayment | null = null;
-  email: string = '';
-  phone: string = '';
-  address: string = '';
+  private payment: TPayment | null = null;
+  private email: string = '';
+  private phone: string = '';
+  private address: string = '';
 
   setPayment(method: TPayment): void {
     this.payment = method;
@@ -23,14 +22,12 @@ export class OrderModel {
     this.address = address;
   }
 
-  getOrderData(total: number, items: string[]): IOrder {
+  getData(): IBuyer {
     return {
-      payment: this.payment as TPayment,
+      payment: this.payment,
       email: this.email,
       phone: this.phone,
       address: this.address,
-      total,
-      items
     };
   }
 
@@ -41,22 +38,22 @@ export class OrderModel {
     this.address = '';
   }
 
-  isValid(): { payment?: string, email?: string, phone?: string, address?: string } {
-    const errors: { payment?: string, email?: string, phone?: string, address?: string } = {};
+  validate(): TFormErrors {
+    const errors: TFormErrors= {};
 
     if (!this.payment) {
       errors.payment = 'Выберите способ оплаты.';
     }
 
-    if (!this.email) {
+    if (!this.email.trim()) {
       errors.email = 'Укажите адрес электронной почты.';
     }
 
-    if (!this.phone) {
+    if (!this.phone.trim()) {
       errors.phone = 'Укажите номер телефона.';
     }
 
-    if (!this.address) {
+    if (!this.address.trim()) {
       errors.address = 'Укажите адрес.';
     }
 
